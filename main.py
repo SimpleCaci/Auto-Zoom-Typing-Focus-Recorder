@@ -39,6 +39,7 @@ def main():
     zoom_min, zoom_max = 1.0, 3.5
 
     outside_lerp = 0.0
+    isZoomMode = True
 
     while True:
 
@@ -52,6 +53,9 @@ def main():
             desired_zoom -= 0.10
         if win32api.GetAsyncKeyState(ord('R')):
             desired_zoom = 1.5
+        if win32api.GetAsyncKeyState(ord('M')):
+            isZoomMode = not isZoomMode
+            print("Mode Switched")
 
         desired_zoom = max(zoom_min, min(desired_zoom, zoom_max))
 
@@ -77,7 +81,7 @@ def main():
 
 
         # ------------------- INSIDE WINDOW -------------------
-        if inside:
+        if inside and isZoomMode:
             outside_lerp = lerp(outside_lerp, 0.0, 0.20)
             target_zoom = lerp(target_zoom, desired_zoom, 0.15)
 
@@ -147,3 +151,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
