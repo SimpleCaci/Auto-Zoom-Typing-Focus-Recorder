@@ -1,21 +1,49 @@
-import cv2
+import numpy as np
+from capture import grab_crop
 
-def smooth_zoom(frame, center, zoom_factor=1.6):
-    h, w, _ = frame.shape
-    cx, cy = center
+prev_cx = None
+prev_cy = None
+prev_zoom = None
 
-    # Calculate zoomed region size
-    box_w = int(w / zoom_factor)
-    box_h = int(h / zoom_factor)
+def smooth_zoom(center, target_zoom, MONITOR):
+    global prev_cx, prev_cy, prev_zoom
 
-    # Boundaries of zoom window
-    x1 = max(0, cx - box_w // 2)
-    y1 = max(0, cy - box_h // 2)
-    x2 = min(w, x1 + box_w)
-    y2 = min(h, y1 + box_h)
+    tx, ty = center
+    w = MONITOR["width"]
+    h = MONITOR["height"]
 
-    # Crop + scale back up
-    zoomed = frame[y1:y2, x1:x2]
-    zoomed = cv2.resize(zoomed, (w, h))
+    # --- Smooth state initialization ---
+    if prev_cx is None:
+        prev_cx, prev_cy = tx, ty
+    if prev_zoom is None:
+        prev_zoom = target_zoom
 
+    # --- Smooth center movement ---
+    cx = prev_cx + (tx - prev_cx) * 0.18
+    cy = prev_cy + (ty - prev_cy) * 0.18
+
+    # --- Smooth zoom factor ---
+    zoom = prev_zoom + (target_zoom - prev_zoom) * 0.12
+    zoom = max(1.0, min(zoom, 3.0))  # limit zoom range
+
+    prev_cx, prev_cy, prev_zoom = cx, cy, zoom
+
+    # --- Maintain aspect ratio ---
+    box_w = int(w / zoom)
+    aspect = w / h
+    box_h = int(box_w / aspect)
+
+    half_w = box_w // 2
+    half_h = box_h // 2
+
+    # --- Clamp center so crop stays on-screen ---
+    cx = int(min(max(cx, half_w), w - half_w))
+    cy = int(min(max(cy, half_h), h - half_h))
+
+    # --- Absolute screen coordinates for MSS ---
+    x1 = MONITOR["left"] + cx - half_w
+    y1 = MONITOR["top"] + cy - half_h
+
+    # --- Fast region capture ---
+    zoomed = grab_crop(x1, y1, box_w, box_h)
     return zoomed
