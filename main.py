@@ -1,11 +1,12 @@
 import cv2
 import time
 from capture import grab_frame
-from input_tracker import start_listener, zoom_active, get_cursor_pos, update_zoom_state
+from input_tracker import start_listener, zoom_active, get_cursor_pos
 from zoom import smooth_zoom
 from config import MONITOR, FPS, ZOOM_FACTOR
 
 def main():
+    global zoom_active
     start_listener()
     frame_delay = 1 / FPS
 
@@ -16,11 +17,8 @@ def main():
     while True:
         frame = grab_frame(MONITOR)
 
-
-        update_zoom_state()
-        print("typing =", zoom_active)
         if zoom_active:
-            print("typing...")
+            print("zoom_activating...")
             center = get_cursor_pos()
             frame = smooth_zoom(frame, center, ZOOM_FACTOR)
 
