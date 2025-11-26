@@ -6,6 +6,9 @@ from input_tracker import start_listener, get_cursor_pos, update_zoom_state
 from zoom import smooth_zoom
 from config import MONITOR, FPS, ZOOM_FACTOR
 
+from focused_field import get_focused_field_center
+
+
 def main():
     start_listener()
     frame_delay = 1 / FPS
@@ -21,7 +24,8 @@ def main():
 
         if input_tracker.zoom_active:
             #print("zoom_activating...")
-            center = get_cursor_pos()
+            #center = get_cursor_pos()
+            center = get_focused_field_center()
             frame = smooth_zoom(frame, center, ZOOM_FACTOR)
 
         cv2.imshow("AutoZoom Preview", frame)
