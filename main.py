@@ -17,6 +17,7 @@ def main():
 
     cv2.namedWindow("AutoZoom Preview", cv2.WINDOW_NORMAL) #single screen instance
 
+    isCursorFocus = True
     while True:
         frame = grab_frame(MONITOR)
 
@@ -24,8 +25,15 @@ def main():
 
         if input_tracker.zoom_active:
             #print("zoom_activating...")
-            #center = get_cursor_pos()
-            center = get_focused_field_center()
+            try:
+                center = get_focused_field_center()
+            except:
+                center = get_cursor_pos()
+            if  (0xFF == ord('m')):
+                isCursorFocus = not isCursorFocus
+            
+            if isCursorFocus:
+                center = get_cursor_pos()
             frame = smooth_zoom(frame, center, ZOOM_FACTOR)
 
         cv2.imshow("AutoZoom Preview", frame)

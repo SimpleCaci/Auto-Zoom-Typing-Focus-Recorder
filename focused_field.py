@@ -9,6 +9,8 @@ def get_focused_field_center():
         for window in windows:
             if window.is_active():
                 focused_window = window
+                print("Focused Window is")
+                print(focused_window)
 
         if not focused_window:
             return None

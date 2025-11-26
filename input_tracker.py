@@ -4,7 +4,7 @@ import time
 
 zoom_active = False
 last_typed_time = 0
-TIMEOUT = 0.6
+TIMEOUT = 1.2
 
 KEYS = "abcdefghijklmnopqrstuvwxyz0123456789,./;'[]\\`-=!@#$%^&*()_+{}|:\"<>? "
 
