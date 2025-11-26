@@ -1,9 +1,11 @@
+# config.py
+
+# CHANGE THESE IF YOU USE MULTI-MONITOR
 MONITOR = {
-    "top": 0,
     "left": 0,
-    "width": 1920,
+    "top": 0,
+    "width": 2560,
     "height": 1080
 }
 
-FPS = 30
-ZOOM_FACTOR = 1.6
+ZOOM_FACTOR = 1.5
