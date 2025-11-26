@@ -1,3 +1,4 @@
+import pywinauto
 from pywinauto import Desktop
 import time
 
@@ -6,8 +7,11 @@ def get_focused_field_center():
     try:
         focused = Desktop(backend="uia")
         print(focused)
-        focused  = focused.from_point(0, 0)
-        print(focused)
+        focused_windows  = focused.windows()
+        for window in focused_windows:
+            if window.is_active():
+                print(window)
+        #print(focused)
         '''
         if not focused:
             return None
