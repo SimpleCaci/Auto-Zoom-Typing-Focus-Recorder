@@ -1,10 +1,10 @@
-# Auto Zoom Typing Focus Recorder
+# Focus Zoom Recorder
 
-A Windows screen-capture experiment that automatically creates a cinematic zoom around the active window and cursor.
+A Windows screen recorder that automatically creates a cinematic zoom around the active window and cursor.
 
 The project is designed for coding tutorials and demonstrations where the viewer should stay focused on the part of the desktop currently being used. It captures a configured monitor, follows the foreground window, smoothly zooms toward the pointer, and previews a reframed output.
 
-> **Status:** Windows prototype with live capture, foreground-window tracking, smooth cursor-following zoom, and an OpenCV preview.
+> **Status:** working Windows prototype with live capture, foreground-window tracking, smooth cursor-following zoom, MP4 recording, and an OpenCV preview.
 
 ## Current capabilities
 
@@ -14,7 +14,7 @@ The project is designed for coding tutorials and demonstrations where the viewer
 - blurred-background focus treatment outside the active window
 - adjustable zoom level and reset controls
 - OpenCV live preview
-- supporting caret/input/recording modules under development
+- on-demand MP4 recording to the local `recordings/` folder
 
 ## Technology
 
@@ -23,7 +23,6 @@ The project is designed for coding tutorials and demonstrations where the viewer
 - MSS
 - PyWin32
 - PyAutoGUI and pynput
-- FFmpeg integration experiments
 
 ## Setup
 
@@ -43,12 +42,15 @@ Edit `config.py` before running. The committed monitor dimensions are machine-sp
 python main.py
 ```
 
+Recordings are saved as timestamped MP4 files under `recordings/`.
+
 Current controls:
 
 - **E / Q:** increase or decrease zoom
 - **R:** reset zoom
 - **M:** toggle zoom mode
-- **X:** exit preview
+- **V:** start or stop MP4 recording
+- **X:** stop recording and exit preview
 
 ## Privacy and safety
 
@@ -58,7 +60,6 @@ This application captures the configured desktop monitor. It can expose notifica
 
 - monitor coordinates and size are hard-coded
 - key polling can toggle or adjust values repeatedly while a key is held
-- the main path previews frames but does not yet document a finished recording workflow
 - Windows display scaling and multiple monitors are not handled robustly
 - errors from screen capture and active-window lookup are not shown clearly
 
@@ -66,9 +67,8 @@ This application captures the configured desktop monitor. It can expose notifica
 
 - detect monitors dynamically and add a small configuration CLI
 - debounce hotkeys and display the current zoom/mode
-- connect the preview pipeline to a verified video writer
 - add pause, privacy mask, and notification-area exclusion controls
-- remove generated caches and isolate exploratory code
+- add automated checks for zoom geometry and frame resizing
 - capture a before/after demo using non-sensitive content
 
 ## License and authorship

@@ -10,6 +10,7 @@ from capture import grab_frame_full
 from zoom import cinematic_zoom
 from active_window import get_active_window_rect
 from config import MONITOR
+from video_writer import VideoRecorder
 
 
 # ------------ helpers ------------
@@ -32,7 +33,9 @@ def get_scroll_delta():
 
 # ------------ main program ------------
 def main():
-    cv2.namedWindow("AutoZoom Preview", cv2.WINDOW_NORMAL)
+    cv2.namedWindow("Focus Zoom Preview", cv2.WINDOW_NORMAL)
+    recorder = VideoRecorder()
+    print("Press V to start or stop recording. Press X to exit.")
 
     desired_zoom = 1.5
     target_zoom = 1.5
@@ -142,10 +145,26 @@ def main():
 
 
         # ------------------- DISPLAY -------------------
-        cv2.imshow("AutoZoom Preview", frame)
-        if cv2.waitKey(1) & 0xFF == ord('X'):
+        cv2.imshow("Focus Zoom Preview", frame)
+        key = cv2.waitKey(1) & 0xFF
+
+        if key in (ord("v"), ord("V")):
+            if recorder.is_recording:
+                saved_path = recorder.stop()
+                print(f"Recording saved to {saved_path}")
+            else:
+                saved_path = recorder.start(frame)
+                print(f"Recording started: {saved_path}")
+
+        if recorder.is_recording:
+            recorder.write(frame)
+
+        if key in (ord("x"), ord("X")):
             break
 
+    if recorder.is_recording:
+        saved_path = recorder.stop()
+        print(f"Recording saved to {saved_path}")
     cv2.destroyAllWindows()
 
 
