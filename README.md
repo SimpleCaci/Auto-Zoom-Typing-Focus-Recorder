@@ -8,7 +8,7 @@ Focus Zoom Recorder follows the foreground window and cursor, reducing visual di
 
 ## Current capabilities
 
-- full-monitor capture with MSS
+- automatic monitor discovery and capture with MSS
 - active-window detection through Win32 APIs
 - smooth cursor-following zoom
 - blurred-background focus treatment outside the active window
@@ -35,13 +35,14 @@ py -3.11 -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-Edit `config.py` before running. The committed monitor dimensions are machine-specific.
-
 ## Run
 
 ```powershell
-python main.py
+python main.py --list-monitors
+python main.py --monitor 1
 ```
+
+The first command prints each detected monitor with its resolution and desktop position. The second starts the recorder on the selected display. If no monitor is specified, monitor 1 is used.
 
 Recordings are saved as timestamped MP4 files under `recordings/`.
 
@@ -59,14 +60,12 @@ This application captures the configured desktop monitor. It can expose notifica
 
 ## Known limitations
 
-- monitor coordinates and size are hard-coded
 - key polling can toggle or adjust values repeatedly while a key is held
-- Windows display scaling and multiple monitors are not handled robustly
+- Windows display scaling can still vary between hardware configurations
 - errors from screen capture and active-window lookup are not shown clearly
 
 ## High-value next steps
 
-- detect monitors dynamically and add a small configuration CLI
 - debounce hotkeys and display the current zoom/mode
 - add pause, privacy mask, and notification-area exclusion controls
 - add automated checks for zoom geometry and frame resizing

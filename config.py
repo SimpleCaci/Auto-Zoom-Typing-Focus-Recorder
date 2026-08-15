@@ -1,11 +1,3 @@
-# config.py
-
-# CHANGE THESE IF YOU USE MULTI-MONITOR
-MONITOR = {
-    "left": 0,
-    "top": 0,
-    "width": 2560,
-    "height": 1080
-}
-
-ZOOM_FACTOR = 1.5
+DEFAULT_MONITOR_INDEX = 1
+DEFAULT_ZOOM_FACTOR = 1.5
+RECORDING_FPS = 30.0

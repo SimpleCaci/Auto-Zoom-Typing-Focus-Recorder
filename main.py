@@ -1,16 +1,48 @@
 # main.py — Final Cinematic Build
 
+import argparse
+
 import cv2
 import numpy as np
 import win32gui
 import win32api
 import win32con
 
-from capture import grab_frame_full
+from capture import get_monitor, grab_frame_full, list_monitors
 from zoom import cinematic_zoom
 from active_window import get_active_window_rect
-from config import MONITOR
 from video_writer import VideoRecorder
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Keep the active task in focus and record shareable walkthroughs."
+    )
+    parser.add_argument(
+        "--monitor",
+        type=int,
+        default=1,
+        help="One-based monitor index to capture. Defaults to 1.",
+    )
+    parser.add_argument(
+        "--list-monitors",
+        action="store_true",
+        help="Print available monitors and exit.",
+    )
+    return parser.parse_args()
+
+
+def print_monitors():
+    monitors = list_monitors()
+    if not monitors:
+        print("No physical monitors were detected.")
+        return
+
+    for monitor in monitors:
+        print(
+            f'{monitor["index"]}: {monitor["width"]}x{monitor["height"]} '
+            f'at ({monitor["left"]}, {monitor["top"]})'
+        )
 
 
 # ------------ helpers ------------
@@ -33,6 +65,22 @@ def get_scroll_delta():
 
 # ------------ main program ------------
 def main():
+    args = parse_args()
+    if args.list_monitors:
+        print_monitors()
+        return
+
+    try:
+        monitor = get_monitor(args.monitor)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
+
+    print(
+        f'Capturing monitor {args.monitor}: '
+        f'{monitor["width"]}x{monitor["height"]} '
+        f'at ({monitor["left"]}, {monitor["top"]})'
+    )
+
     cv2.namedWindow("Focus Zoom Preview", cv2.WINDOW_NORMAL)
     recorder = VideoRecorder()
     print("Press V to start or stop recording. Press X to exit.")
@@ -64,8 +112,8 @@ def main():
 
 
         # ------------------- FRAME CAPTURE -------------------
-        frame = grab_frame_full(MONITOR)
-        mon_w, mon_h = MONITOR["width"], MONITOR["height"]
+        frame = grab_frame_full(monitor)
+        mon_w, mon_h = monitor["width"], monitor["height"]
 
 
         # ------------------- WINDOW RECT -------------------
@@ -94,8 +142,8 @@ def main():
             tx = int(lerp(win_cx, mx, 0.35))
             ty = int(lerp(win_cy, my, 0.35))
 
-            tx -= MONITOR["left"]
-            ty -= MONITOR["top"]
+            tx -= monitor["left"]
+            ty -= monitor["top"]
 
             frame = cinematic_zoom(frame, (tx, ty), target_zoom)
 
@@ -106,10 +154,10 @@ def main():
             target_zoom = lerp(target_zoom, 1.0, 0.20)
 
             # compute relative crop
-            cx1 = max(0, wx - MONITOR["left"])
-            cy1 = max(0, wy - MONITOR["top"])
-            cx2 = min(mon_w, wr - MONITOR["left"])
-            cy2 = min(mon_h, wb - MONITOR["top"])
+            cx1 = max(0, wx - monitor["left"])
+            cy1 = max(0, wy - monitor["top"])
+            cx2 = min(mon_w, wr - monitor["left"])
+            cy2 = min(mon_h, wb - monitor["top"])
 
             if cx2 - cx1 > 5 and cy2 - cy1 > 5:
                 window_crop = frame[cy1:cy2, cx1:cx2]
