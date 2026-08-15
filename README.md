@@ -1,8 +1,8 @@
 # Focus Zoom Recorder
 
-A Windows screen recorder that automatically creates a cinematic zoom around the active window and cursor.
+A focus-aware Windows recorder that helps you stay anchored to the active task while turning real workflows into polished, shareable walkthroughs.
 
-The project is designed for coding tutorials and demonstrations where the viewer should stay focused on the part of the desktop currently being used. It captures a configured monitor, follows the foreground window, smoothly zooms toward the pointer, and previews a reframed output.
+Focus Zoom Recorder follows the foreground window and cursor, reducing visual distraction while you work. The same attention-aware framing is captured as an MP4, making it easy to turn a coding session, design process, or repeatable workflow into a tutorial or demonstration.
 
 > **Status:** working Windows prototype with live capture, foreground-window tracking, smooth cursor-following zoom, MP4 recording, and an OpenCV preview.
 
@@ -14,7 +14,8 @@ The project is designed for coding tutorials and demonstrations where the viewer
 - blurred-background focus treatment outside the active window
 - adjustable zoom level and reset controls
 - OpenCV live preview
-- on-demand MP4 recording to the local `recordings/` folder
+- on-demand MP4 recording for shareable tutorials and workflow walkthroughs
+- attention-aware framing that keeps the active task visually prominent
 
 ## Technology
 
